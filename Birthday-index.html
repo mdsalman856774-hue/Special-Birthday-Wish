@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Midnight Lifafa Surprise — Advanced</title>
+<meta name="color-scheme" content="dark">
+<style>
+  /* ---------- Base / Theme ---------- */
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+  :root{
+    --bg1: #0f0c29;
+    --bg2: #302b63;
+    --accent1: #ff5ca1;
+    --accent2: #ffd166;
+    --glass: rgba(255,255,255,0.04);
+    --card: rgba(255,255,255,0.03);
+  }
+  *{box-sizing:border-box;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+  html,body{height:100%;background:radial-gradient(circle at 10% 10%, #111026 0%, var(--bg1) 20%, var(--bg2) 100%);color:#fff;margin:0;overflow:hidden}
+  .app {
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:18px;padding:26px;
+    justify-content:center;
+    position:relative;
+  }
+
+  /* floating subtle glow shapes */
+  .glow { position:absolute;filter:blur(80px);opacity:0.45;pointer-events:none;z-index:0 }
+  .g1{ width:520px;height:520px;background:radial-gradient(circle,#3b1053,#7b2a7d);left:-160px;top:-80px;transform:rotate(12deg)}
+  .g2{ width:420px;height:420px;background:radial-gradient(circle,#1b3a4a,#0f1724);right:-120px;bottom:-120px;opacity:0.28}
+
+  /* header */
+  header{z-index:4; display:flex;flex-direction:column;align-items:center;gap:8px}
+  h1{font-size:28px;letter-spacing:0.2px;margin:0;text-shadow:0 0 18px rgba(255,92,161,0.12)}
+  .subtitle{color:#dcd6e9;font-size:13px;opacity:0.9}
+
+  /* name input card */
+  .card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:14px; padding:14px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.45); display:flex;gap:12px;align-items:center;z-index:5;backdrop-filter: blur(6px) }
+  .card input{ background:transparent;border:1px solid rgba(255,255,255,0.07);padding:10px 12px;border-radius:10px;color:#fff;outline:none;width:260px}
+  .card button{ background:linear-gradient(90deg,var(--accent1),#ff7b6d); border:none;padding:10px 14px;border-radius:10px;color:#fff;font-weight:700; cursor:pointer; box-shadow:0 10px 28px rgba(255,92,161,0.12); transition:transform .16s}
+  .card button:active{ transform:translateY(1px) }
+  .muted-toggle{ background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:#fff;cursor:pointer }
+
+  /* envelopes row */
+  #stage { display:flex; gap:20px; align-items:center; justify-content:center; z-index:6; width:100%; max-width:1100px; margin-top:18px; }
+  .envelope {
+    width:260px; height:170px; border-radius:12px; position:relative; perspective:900px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    cursor:pointer; transition: transform .35s ease;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .envelope:hover{ transform: translateY(-8px) scale(1.03) rotate(-1deg) }
+  .flap {
+    position:absolute; top:0; left:0; width:100%; height:60%; transform-origin:top center;
+    background: linear-gradient(135deg,#2b1a36 0%, #4b234b 40%, var(--accent1) 100%);
+    clip-path: polygon(0 0,100% 0,50% 100%);
+    border-top-left-radius:12px;border-top-right-radius:12px;
+    transition: transform .9s cubic-bezier(.2,.9,.2,1);
+    box-shadow: inset 0 -10px 30px rgba(0,0,0,0.18);
+    z-index:4;
+  }
+  .envelope.open .flap { transform: rotateX(180deg) translateY(-4px) }
+  .envelope .inner {
+    position:relative; width:90%; height:70%; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:8px; display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;
+    transform: translateZ(30px);
+  }
+  .envelope .message { color:#fff; opacity:0; font-weight:600; letter-spacing:0.2px; transition: opacity .8s .5s; font-size:15px }
+  .envelope.open .message { opacity:1 }
+
+  /* typewriter */
+  .typewriter { display:inline-block; border-right:2px solid rgba(255,255,255,0.9); padding-right:6px; white-space:nowrap; overflow:hidden; max-width:100% }
+
+  /* final cake area */
+  .final-area{ margin-top:18px; display:flex;flex-direction:column;align-items:center; gap:10px; z-index:6 }
+  .cake-wrap{ width:320px;height:220px; display:flex;align-items:center;justify-content:center; position:relative }
+  /* simple 3-layer CSS cake */
+  .cake {
+    width:260px;height:140px;border-radius:14px; position:relative; box-shadow: 0 14px 40px rgba(0,0,0,0.6); display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:16px;
+    background: linear-gradient(180deg,#fff0f6,#ffd9e8);
+    transform-origin:center bottom;
+  }
+  .cake .slice { width:80%; height:36px; border-radius:8px; margin:6px 0; display:flex;align-items:center;justify-content:center; font-weight:700; color:#6b2b4b }
+  .cake .l1{ background:linear-gradient(180deg,#ffb6d1,#ff95be) }
+  .cake .l2{ background:linear-gradient(180deg,#ffd8a8,#ffd080) }
+  .cake .l3{ background:linear-gradient(180deg,#fff6f4,#fff0f1) }
+  .candle{ position:absolute; top:-24px; width:10px; height:40px; background:#fff;border-radius:4px; left:50%; transform:translateX(-50%); display:flex; align-items:flex-start; justify-content:center }
+  .flame{ width:10px;height:12px;border-radius:50%; background: radial-gradient(circle,#fff3a6,#ffb74d,#ff4d6f); margin-top:-8px; box-shadow:0 8px 20px rgba(255,100,140,0.25); animation:flicker 300ms infinite alternate}
+  @keyframes flicker{ 0%{transform: translateY(0) scale(1)} 100%{transform: translateY(-3px) scale(1.08)} }
+
+  .cut-btn{ margin-top:12px;padding:10px 18px;border-radius:999px;border:none;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#111;font-weight:700;cursor:pointer; box-shadow:0 12px 30px rgba(255,92,161,0.12) }
+
+  /* fireworks canvas covers whole screen */
+  canvas#fx { position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:2 }
+
+  /* bottom credit */
+  .credit { position:fixed; right:18px; bottom:16px; color:rgba(255,200,240,0.9); font-weight:600; text-shadow:0 4px 14px rgba(0,0,0,0.5); z-index:6 }
+
+  /* responsive: allow horizontal scroll on tiny screens */
+  @media (max-width:880px){
+    #stage{ gap:14px; padding:12px; overflow-x:auto; -webkit-overflow-scrolling:touch; align-items:center }
+    .envelope{ flex:0 0 220px; width:220px; height:150px }
+    .card input{ width:140px }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+
+    <header>
+      <h1>Midnight Lifafa Surprise</h1>
+      <div class="subtitle">Click an envelope — a personal message awaits ✨</div>
+    </header>
+
+    <!-- input -->
+    <div class="card" id="nameCard" style="z-index:6">
+      <input id="nameInput" placeholder="Please enter your name">
+      <button id="startBtn" title="Start surprise">Start</button>
+      <button id="muteBtn" class="muted-toggle" title="Mute/unmute">🔊</button>
+    </div>
+
+    <!-- envelopes row -->
+    <div id="stage" aria-live="polite" style="z-index:6; margin-top:18px; display:none">
+      <!-- Envelope 1 -->
+      <div class="envelope" id="env1" data-opened="false" onclick="openLifafa(1)">
+        <div class="flap"></div>
+        <div class="inner">
+          <div class="message"><span id="msg1" class="typewriter"></span></div>
+        </div>
+      </div>
+
+      <!-- Envelope 2 -->
+      <div class="envelope" id="env2" data-opened="false" onclick="openLifafa(2)" style="opacity:0.3; pointer-events:none">
+        <div class="flap"></div>
+        <div class="inner">
+          <div class="message"><span id="msg2" class="typewriter"></span></div>
+        </div>
+      </div>
+
+      <!-- Envelope 3 (image placeholder inside inner) -->
+      <div class="envelope" id="env3" data-opened="false" onclick="openLifafa(3)" style="opacity:0.3; pointer-events:none">
+        <div class="flap"></div>
+        <div class="inner" style="flex-direction:column; gap:8px">
+          <!-- When you have an image ready, replace src with your image file name -->
+          <!-- Example: <img src="yourphoto.jpg" alt="photo" style="max-width:90%;border-radius:8px"> -->
+          <img id="envImg" src="" alt="" style="max-width:86%;border-radius:8px; display:none;">
+          <div class="message"><span id="msg3" class="typewriter"></span></div>
+        </div>
+      </div>
+
+      <!-- Envelope 4 final -->
+      <div class="envelope" id="env4" data-opened="false" onclick="openLifafa(4)" style="opacity:0.3; pointer-events:none">
+        <div class="flap"></div>
+        <div class="inner">
+          <div class="message"><span id="msg4" class="typewriter"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- final cake area (hidden until final) -->
+    <div class="final-area" id="finalArea" style="display:none; z-index:6">
+      <div class="cake-wrap">
+        <div class="cake" id="cake">
+          <div class="slice l1">Yummy</div>
+          <div class="slice l2">Sweet</div>
+          <div class="slice l3">Love</div>
+          <div class="candle"><div class="flame" id="flame"></div></div>
+        </div>
+      </div>
+      <button class="cut-btn" id="cutBtn">Cut Cake 🍰</button>
+    </div>
+
+    <div class="credit">Made with ❤️ by <strong>Md Salman</strong></div>
+  </div>
+
+  <!-- fireworks/confetti canvas -->
+  <canvas id="fx"></canvas>
+
+  <!-- background music (optional) -->
+  <audio id="bgMusic" loop src="music.mp3"></audio>
+
+<script>
+/* ============================
+   Utility & UI flow
+   ============================ */
+const startBtn = document.getElementById('startBtn');
+const nameInput = document.getElementById('nameInput');
+const stageEl = document.getElementById('stage');
+const muteBtn = document.getElementById('muteBtn');
+const bgMusic = document.getElementById('bgMusic');
+let muted = false;
+let userName = '';
+let openedCount = 0;
+
+/* Typewriter messages (personalized) */
+const messages = {
+  1: (name)=>`Hey ${name}, your day just got a little brighter ✨`,
+  2: (name)=>`Wishing you endless smiles and beautiful moments, ${name}.`,
+  3: (name)=>`A memory for you — (add your image later) — you are loved 💖`,
+  4: (name)=>`Final surprise — make a wish, ${name}! 🎂`
+}
+
+/* Start handler */
+startBtn.addEventListener('click', ()=> {
+  const val = nameInput.value.trim();
+  if(!val){ nameInput.classList.add('shake'); setTimeout(()=>nameInput.classList.remove('shake'),500); return; }
+  userName = val;
+  // show stage row
+  stageEl.style.display = 'flex';
+  document.getElementById('nameCard').style.display = 'none';
+  // enable first envelope only (others will be enabled sequentially)
+  enableEnvelope(1);
+  // play music softly
+  if(!muted){ bgMusic.volume = 0.35; bgMusic.play().catch(()=>{}); }
+  // voice greeting (male, en-IN)
+  speakGreeting(userName);
+});
+
+/* mute toggle */
+muteBtn.addEventListener('click', ()=> {
+  muted = !muted;
+  if(muted){ bgMusic.pause(); muteBtn.textContent = '🔇' } else { bgMusic.play().catch(()=>{}); muteBtn.textContent = '🔊' }
+});
+
+/* enable envelope with index */
+function enableEnvelope(i){
+  const el = document.getElementById('env'+i);
+  if(!el) return;
+  el.style.opacity = '1';
+  el.style.pointerEvents = 'auto';
+  // small entrance pop
+  el.animate([{transform:'scale(.92)'},{transform:'scale(1)'}], {duration:420, easing:'ease-out'});
+}
+
+/* open lifafa */
+function openLifafa(i){
+  const el = document.getElementById('env'+i);
+  if(!el || el.dataset.opened === 'true') return;
+  el.classList.add('open');
+  el.dataset.opened = 'true';
+  openedCount++;
+  // typewriter reveal for message (personalized)
+  const span = document.getElementById('msg'+i);
+  typeWriter(span, messages[i](userName), 20, ()=> {
+    // after message shown, small SFX (here we just trigger a burst)
+    fireBurst(window.innerWidth/2, window.innerHeight*0.38, 28);
+  });
+
+  // allow next envelope after short delay
+  setTimeout(()=> {
+    if(i < 4) enableEnvelope(i+1);
+    else {
+      // final: reveal cake area
+      setTimeout(()=> revealFinal(), 800);
+    }
+  }, 900);
+}
+
+/* typewriter effect */
+function typeWriter(el, text, speed=30, ondone){
+  el.textContent = '';
+  el.classList.add('typewriter');
+  let i = 0;
+  const id = setInterval(()=> {
+    el.textContent += text.charAt(i);
+    i++;
+    if(i >= text.length){ clearInterval(id); el.classList.remove('typewriter'); if(ondone) ondone(); }
+  }, speed);
+}
+
+/* voice greeting (male indian) + music ducking */
+function speakGreeting(name){
+  if(!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(`Happy Birthday ${name}! Wishing you a wonderful year ahead.`);
+  u.lang = 'en-IN';
+  u.rate = 0.95;
+  u.pitch = 1;
+  u.volume = 1;
+  // try to pick a male voice if available
+  const voices = speechSynthesis.getVoices();
+  if(voices && voices.length){
+    const male = voices.find(v => /male|man|boy/i.test(v.name)) || voices.find(v => v.lang.includes('en') && /google/i.test(v.name)) || voices[0];
+    if(male) u.voice = male;
+  }
+  // duck music down during speech and restore
+  const originalVol = bgMusic.volume || 0.35;
+  const fadeOutDur = 120; // ms
+  if(!muted && !bgMusic.paused){
+    fadeVolume(bgMusic, originalVol, 0.08, fadeOutDur);
+    u.onend = ()=> fadeVolume(bgMusic, 0.08, originalVol, 400);
+  }
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+/* fade volume helper */
+function fadeVolume(audioEl, from, to, duration){
+  const steps = 12;
+  const stepTime = Math.max(10, Math.floor(duration/steps));
+  let cur = from;
+  const diff = (to - from)/steps;
+  let step = 0;
+  const id = setInterval(()=> {
+    step++;
+    cur += diff;
+    audioEl.volume = Math.max(0, Math.min(1, cur));
+    if(step >= steps){ clearInterval(id); audioEl.volume = to; }
+  }, stepTime);
+}
+
+/* reveal final cake area */
+function revealFinal(){
+  document.getElementById('finalArea').style.display = 'flex';
+  document.getElementById('env4').style.pointerEvents = 'none';
+  // gentle flower of confetti
+  fireBurst(window.innerWidth*0.5, window.innerHeight*0.35, 220);
+}
+
+/* Cake cutting animation */
+const cutBtn = document.getElementById('cutBtn');
+cutBtn && cutBtn.addEventListener('click', ()=> {
+  // small wiggle + slice animation
+  const cake = document.getElementById('cake');
+  cake.animate([{transform:'translateY(0) rotate(0)'},{transform:'translateY(-6px) rotate(-2deg)'},{transform:'translateY(0) rotate(0)'}], {duration:560, iterations:1});
+  // "slice" effect: drop right half outward by animating transform on right slices
+  const slices = cake.querySelectorAll('.slice');
+  if(slices.length){
+    // animate last two slices to simulate cut & move
+    slices[0].animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'}], {duration:600, fill:'forwards'});
+    slices[1].animate([{transform:'translateX(0)'},{transform:'translateX(6px)'}], {duration:700, fill:'forwards'});
+    // candle off
+    const flame = document.getElementById('flame');
+    if(flame) flame.style.display = 'none';
+  }
+  // big confetti + fireworks finale
+  setTimeout(()=> { fireBurst(window.innerWidth*0.5, window.innerHeight*0.3, 380); }, 350);
+  // louder music bump
+  if(!muted){ fadeVolume(bgMusic, bgMusic.volume, Math.min(1, bgMusic.volume+0.18), 250); }
+  // optional voice
+  const u = new SpeechSynthesisUtterance(`Cake is cut! Happy Birthday ${userName}!`);
+  u.lang = 'en-IN'; u.volume = 1; speechSynthesis.speak(u);
+});
+
+/* ============================
+   Fireworks + confetti (canvas)
+   Simple particle system for bursts
+   ============================ */
+const fx = document.getElementById('fx');
+const fxCtx = fx.getContext ? fx.getContext('2d') : null;
+if(fxCtx){
+  fx.width = innerWidth;
+  fx.height = innerHeight;
+  window.addEventListener('resize', ()=> { fx.width = innerWidth; fx.height = innerHeight; });
+
+  let particles = [];
+  function fireBurst(x, y, count=60){
+    for(let i=0;i<count;i++){
+      const angle = Math.random()*Math.PI*2;
+      const speed = 1.6 + Math.random()*6;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle)*speed,
+        vy: Math.sin(angle)*speed,
+        life: 60 + Math.random()*80,
+        size: 2 + Math.random()*4,
+        hue: Math.floor(Math.random()*360),
+        decay: 0.96 + Math.random()*0.02
+      });
+    }
+  }
+
+  function render(){
+    fxCtx.clearRect(0,0,fx.width,fx.height);
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.06; // gravity
+      p.vx *= p.decay;
+      p.life--;
+      fxCtx.beginPath();
+      fxCtx.fillStyle = `hsl(${p.hue} 90% 60% / ${Math.max(0, p.life/120)})`;
+      fxCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      fxCtx.fill();
+      if(p.life <= 0 || p.y > fx.height + 50) particles.splice(i,1);
+    }
+    requestAnimationFrame(render);
+  }
+  render();
+
+  /* small ambient confetti falling all the time (gentle) */
+  setInterval(()=> {
+    const cx = Math.random()*fx.width;
+    for(let i=0;i<6;i++){
+      particles.push({
+        x: cx + (Math.random()-0.5)*80,
+        y: -10 - Math.random()*40,
+        vx: (Math.random()-0.5)*0.6,
+        vy: 1 + Math.random()*1.2,
+        life: 160 + Math.random()*120,
+        size: 2 + Math.random()*3,
+        hue: Math.floor(Math.random()*360),
+        decay: 0.997
+      });
+    }
+  }, 900);
+}
+
+/* helper to trigger a small burst near pointer (optional interactive) */
+document.addEventListener('click', (e)=> {
+  // don't spawn if clicking UI controls (input/button)
+  if(e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+  fireBurst(e.clientX, e.clientY, 28);
+});
+
+/* ============================
+   Image placeholder: when you place an image file, uncomment or set src
+   Example: document.getElementById('envImg').src = 'myphoto.jpg'; document.getElementById('envImg').style.display = 'block';
+   ============================ */
+
+/* ============================
+   Small helpers for keyboard accessibility
+   ============================ */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' && document.getElementById('nameCard') && document.getElementById('nameCard').style.display !== 'none'){
+    startBtn.click();
+  }
+});
+
+/* expose functions for console (optional) */
+window.openLifafa = openLifafa;
+window.fireBurst = fireBurst;
+window.enableEnvelope = enableEnvelope;
+
+/* ============================
+   Notes & image instructions (do not remove)
+   - To add an image inside envelope #3:
+     1) Put your image file (e.g. 'photo.jpg') in same folder.
+     2) In JS near the top call:
+        const img = document.getElementById('envImg');
+        img.src = 'photo.jpg';
+        img.style.display = 'block';
+     3) Optionally set msg3 text to something personal.
+   - To change music, replace 'music.mp3' file.
+   ============================ */
+</script>
+</body>
+</html>
